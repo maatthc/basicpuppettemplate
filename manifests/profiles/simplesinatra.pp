@@ -1,0 +1,3 @@
+class basicpuppettemplate::profiles::simpleSinatra { 
+
+}

@@ -1,0 +1,20 @@
+{
+  "name": "basicpuppettemplate",
+  "version": "0.1.0",
+  "author": "Alexandre Andrade Silva <aleandrade@gmail.com>",
+  "summary": "Basic template for initial Puppet Linux Setup running nginx and Sinatra application",
+  "license": "Apache 2.0",
+  "source": "https://github.com/maatthc/basicpuppettemplate",
+  "project_page": "https://github.com/maatthc/basicpuppettemplate",
+  "issues_url": "https://github.com/maatthc/basicpuppettemplate/issues",
+  "dependencies": [
+    {"version_requirement":">= 1.0.0","name":"puppetlabs-stdlib"}
+    {"version_requirement":">= 1.4.0","name":"puppetlabs-firewall"}
+    {"version_requirement":">= 0.2.2","name":"puppetlabs-ntp"}
+    {"version_requirement":">= 0.2.2","name":"saz-ssh"}
+    {"version_requirement":">= 0.2.2","name":"huit-splunk"}
+    {"version_requirement":">= 0.2.2","name":"jfryman-nginx"}
+    {"version_requirement":">= 0.2.2","name":"puppetlabs-ruby"}
+  ]
+}
+
