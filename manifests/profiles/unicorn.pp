@@ -1,3 +1,4 @@
-class basicpuppettemplate::profiles::unicorn { 
+# Class
+class basicpuppettemplate::profiles::unicorn {
 
 }

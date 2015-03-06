@@ -1,6 +1,6 @@
 {
-  "name": "basicpuppettemplate",
-  "version": "0.1.0",
+  "name": "maat-basicpuppettemplate",
+  "version": "0.1.1",
   "author": "Alexandre Andrade Silva <aleandrade@gmail.com>",
   "summary": "Basic template for initial Puppet Linux Setup running nginx and Sinatra application",
   "license": "Apache 2.0",

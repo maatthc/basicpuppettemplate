@@ -1,4 +1,5 @@
-class basicpuppettemplate::profiles::nginx { 
+# Class
+class basicpuppettemplate::profiles::nginx {
         Package {
                 allow_virtual => false,
         }
