@@ -1,2 +1,35 @@
 ---
 classes : ['rea']
+ssh::storeconfigs_enabled: true,
+
+ssh::server_options:
+        Protocol: '2'
+        PasswordAuthentication: 'yes'
+        SyslogFacility: 'AUTHPRIV'
+        UsePAM: 'yes'
+        X11Forwarding: 'no'
+        PermitRootLogin: 'no'
+        AuthorizedKeysFile: '.ssh/authorized_keys'
+        RSAAuthentication: 'yes'
+        PubkeyAuthentication: 'yes'
+rea::profiles::base::myusers:
+  devops:
+    ensure: present
+    home: /home/devops
+    shell: /bin/bash
+    uid: 10001
+    gid: 10001
+    groups:
+      - wheel
+      - operations
+    password: YitmwKpPL5FDh6s32Yb08.
+    managehome: true
+rea::profiles::base::mygroups:
+  operations:
+    ensure: present
+    gid: 10001
+rea::profiles::base::ssh_authorized_keys:
+  'devops0@putty':
+    user: 'devops'
+    type: 'ssh-rsa'
+    key:  'AAAAB3NzaC1yc2EAAAADAQABAAABAQDj5AK0EdhTsK2S2W+g4Pvr7dogzW4w/jPlvQGYrN8PjNuofAhavUzigL9jEY3xFtUjdDejmWCkvEAYTg0YZE/70HYMFAYa4gNHGwvEJBK4D/5PsVDTd/VeQ4uLFMXcX4cBLoEJGDwDex0bTorlRO/3VaZ8zOE1CkT4+1T1VKQpH0IuaRM9+URRwgpsvME1igteZ8C2etZICG1K5ju+W/RX8+kZMV/CEVLLIT9JRLS03ALJgE7CrSaFnoM0sR7RN3jTNONZwdtUiDM1mMnsmJlWo8d4ZYHMu8h+UnrFq4daeRZN7PEmBb5Qdipt3NGX7opgOSW1qqCXLdkmtmf+ggJ1'
