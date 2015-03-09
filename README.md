@@ -62,6 +62,7 @@ Please use a vanila installation of Puppet.
 This is the module structure:
 
 * changeModuloname.sh
+
         Use this script to create new vanila template for other initial Puppet Projects
 * ext
         
@@ -71,7 +72,7 @@ This is the module structure:
         The Hiera database files reside here
 * manifests
 
-       Classes/Roles/Profiles are here 
+        Classes/Roles/Profiles are here 
 * metadata.json
 
         Module definition and dependencies
@@ -81,7 +82,8 @@ This is the module structure:
 * templates
 
         Module template used for many classes
-        The other files are not being used and were created automatically for the Puppet Module generator.
+
+The other files are not being used and were created automatically for the Puppet Module generator.
 
 ## Reference
 
