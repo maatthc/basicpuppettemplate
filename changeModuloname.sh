@@ -20,6 +20,7 @@ fi
 new_name=$1
 echo "Renaming module in file contents.."
 find ./ -type f | xargs sed -i s/"$current_name"/"$new_name"/g
+mv manifests/roles/$current_name.pp manifests/roles/$new_name.pp
 echo "Renaming module directory.."
 cd ..
 mv $current_name $new_name
