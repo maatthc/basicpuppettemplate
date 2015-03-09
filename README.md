@@ -11,7 +11,7 @@
 4. [Usage - Configuration options and additional functionality](#usage)
 5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
-
+7. [To do](#todo)
 ## Overview
 
 This is a simple Puppet Template for setting up a Linux (CentOS 5.9) with Nginx, Unicorn and a 'Hello World' Sinatra App. 
@@ -96,3 +96,9 @@ This module has been tested only using CentOs 5.9. Although there is a draft sup
 ## Development
 
 Please fell free to submit any suggestions using the GitHub "Pull Request". 
+
+##TODO
+
+* Automate the installation script
+* Add Passanger support for the Puppet Master node
+* Develop a smarter Nginx+Unicorn Module 
