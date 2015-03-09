@@ -3,7 +3,7 @@
 #### Table of Contents
 
 1. [Overview](#overview)
-2. [Module Description 
+2. [Module Description]
 3. [Setup - The basics of getting started with rea](#setup)
     * [What rea affects](#what-rea-affects)
     * [Setup requirements](#setup-requirements)
