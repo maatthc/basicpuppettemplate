@@ -1,7 +1,7 @@
 # Class
 class rea::profiles::nginx {
-        $path_to_sinatra_app=hiera("rea::profiles::simplesinatra::path_to_sinatra_app")
-        $sinatra_server_name=hiera("rea::profiles::simplesinatra::sinatra_server_name")
+          $path_to_sinatra_app=hiera('rea::profiles::simplesinatra::path_to_sinatra_app')
+          $sinatra_server_name=hiera('rea::profiles::simplesinatra::sinatra_server_name')
         file { 'nginx.conf':
                 path    => '/etc/nginx/nginx.conf',
                 owner   => 'nginx',

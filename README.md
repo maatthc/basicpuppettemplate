@@ -15,65 +15,72 @@
 
 ## Overview
 
-A one-maybe-two sentence summary of what the module does/what problem it solves.
-This is your 30 second elevator pitch for your module. Consider including
-OS/Puppet version it works with.
+This is a simple Puppet Template for setting up a Linux (CentOS 5.9) with Nginx, Unicorn and a 'Hello World' Sinatra App. 
 
 ## Module Description
 
-If applicable, this section should have a brief description of the technology
-the module integrates with and what that integration enables. This section
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?"
-
-If your module has a range of functionality (installation, configuration,
-management, etc.) this is the time to mention it.
+This module will provide a Web site running on the Agent server at port 80 and deliver the Ruby App available at git://github.com/tnh/simple-sinatra-app.git .
+This module has validated using "puppet-lint" but the "line has more than 80 characters" has ignored.
+There are the dependencies of the module:
+* puppetlabs-firewall
+* puppetlabs-ntp
+* saz-ssh
+* huit-splunk
+* puppetlabs-ruby
 
 ## Setup
+Please follow this steps as "root" :
+    curl -L https://github.com/maatthc/rea/tarball/master -o maat-rea.tgz
+    puppet module install maat-rea.tgz
+    ln -s /etc/puppet/modules/rea/ext/site.pp /etc/puppet/manifests/site.pp
+    ln -s /etc/puppet/modules/rea/ext/hiera.yaml /etc/puppet/hiera.yaml
+    Add to the main session of /etc/puppet/puppet.conf:
+            # To user the "each" function for Array from Hiera
+            parser = future
+    /etc/init.d/puppetmaster restart
 
 ### What rea affects
 
-* A list of files, packages, services, or operations that the module will alter,
-  impact, or execute on the system it's installed on.
-* This is a great place to stick any warnings.
-* Can be in list or paragraph form.
+Please keep in mind that this module should overwrite:
+* /etc/puppet/manifests/site.pp
+* /etc/puppet/hiera.yaml
 
-### Setup Requirements **OPTIONAL**
+Please use a vanila installation of Puppet. 
 
-If your module requires anything extra before setting up (pluginsync enabled,
-etc.), mention it here.
+### Setup Requirements 
 
-### Beginning with rea
-
-The very basic steps needed for a user to get the module up and running.
-
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you may wish to include an additional section here: Upgrading
-(For an example, see http://forge.puppetlabs.com/puppetlabs/firewall).
+Puppet-2.7.0 or later
+Facter 1.7.0 or later
+Ruby-1.9.3
 
 ## Usage
+This is the module structure:
 
-Put the classes, types, and resources for customizing, configuring, and doing
-the fancy stuff with your module here.
+* changeModuloname.sh
+        Use this script to create new vanila template for other initial Puppet Projects
+* ext
+        
+        The default site.pp and hiera.yaml are here
+* hieradata
+        The Hiera database files reside here
+* manifests
+       Classes/Roles/Profiles are here 
+* metadata.json
+        Module definition and dependencies
+* README.md
+        This file
+* templates
+        Module template used for many classes
+The other files are not being used and were created automatically for the Puppet Module generator.
 
 ## Reference
 
-Here, list the classes, types, providers, facts, etc contained in your module.
-This section should include all of the under-the-hood workings of your module so
-people know what the module is touching on their system but don't need to mess
-with things. (We are working on automating this section!)
+This module uses modules available at Forge (https://forge.puppetlabs.com/) as much as possible to avoid rewriting the wheel. Some modules available there were ignored for not having enough support, quality or being to complex for this test.
 
 ## Limitations
 
-This is where you list OS compatibility, version compatibility, etc.
+This module was only tested using CentOs 5.9 but there is a draft support for Debian or Ubuntu using Hiera files.
 
 ## Development
 
-Since your module is awesome, other users will want to play with it. Let them
-know what the ground rules for contributing are.
-
-## Release Notes/Contributors/Etc **Optional**
-
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You may also add any additional sections you feel are
-necessary or important to include here. Please use the `## ` header.
+Please fell free to submit any suggestions using the GitHub "Pull Request". 
