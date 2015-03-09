@@ -8,13 +8,13 @@
   "project_page": "https://github.com/maatthc/basicpuppettemplate",
   "issues_url": "https://github.com/maatthc/basicpuppettemplate/issues",
   "dependencies": [
-    {"version_requirement":">= 1.0.0","name":"puppetlabs-stdlib"}
-    {"version_requirement":">= 1.4.0","name":"puppetlabs-firewall"}
-    {"version_requirement":">= 0.2.2","name":"puppetlabs-ntp"}
-    {"version_requirement":">= 0.2.2","name":"saz-ssh"}
-    {"version_requirement":">= 0.2.2","name":"huit-splunk"}
-    {"version_requirement":">= 0.2.2","name":"jfryman-nginx"}
-    {"version_requirement":">= 0.2.2","name":"puppetlabs-ruby"}
+    {"version_requirement":">= 1.0.0","name":"puppetlabs/stdlib"},
+    {"version_requirement":">= 1.4.0","name":"puppetlabs/firewall"},
+    {"version_requirement":">= 3.3.0","name":"puppetlabs/ntp"},
+    {"version_requirement":">= 2.4.0","name":"saz/ssh"},
+    {"version_requirement":">= 1.6.1","name":"huit/splunk"},
+    {"version_requirement":">= 0.2.2","name":"jfryman/nginx"},
+    {"version_requirement":">= 0.4.0","name":"puppetlabs/ruby"}
   ]
 }
 
