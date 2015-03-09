@@ -57,13 +57,20 @@ class rea::base::fw_pre {
     proto  => 'udp',
     action => 'accept',
   }
-
-  firewall { '200 deny outgoing http':
+  #For packages install
+  firewall { '200 allow outgoing https':
+    chain  => 'OUTPUT',
+    state  => ['NEW'],
+    dport  => '443',
+    proto  => 'tcp',
+    action => 'accept',
+  }
+  firewall { '200 allow outgoing http':
     chain  => 'OUTPUT',
     state  => ['NEW'],
     dport  => '80',
     proto  => 'tcp',
-    action => 'drop',
+    action => 'accept',
   }
   firewall { '200 Allow outgoing Puppets':
     chain  => 'OUTPUT',

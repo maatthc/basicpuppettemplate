@@ -24,10 +24,21 @@ rea::profiles::base::myusers:
       - operations
     password: YitmwKpPL5FDh6s32Yb08.
     managehome: true
+  unicorn:
+    ensure: present
+    home: /home/unicorn
+    shell: /sbin/nologin
+    uid: 10002
+    gid: 10002
+    groups:
+      - unicorn
 rea::profiles::base::mygroups:
   operations:
     ensure: present
     gid: 10001
+  unicorn:
+    ensure: present
+    gid: 10002
 rea::profiles::base::ssh_authorized_keys:
   'devops0@putty':
     user: 'devops'
@@ -43,3 +54,7 @@ ntp::servers:
 firewall::trusted_networks:
   - '192.168.1.0/24'
   - '10.1.0.0/24'
+
+
+rea::profiles::simplesinatra::path_to_sinatra_app: /var/sinatra  
+rea::profiles::simplesinatra::sinatra_server_name: www.example.com.au
