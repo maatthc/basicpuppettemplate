@@ -22,6 +22,8 @@ This module will provide a Web site running on the Agent server at port 80 and d
 
 This module has been validated using "puppet-lint" but the "line has more than 80 characters" item has ignored.
 
+Both Nginx and Unicorn workers were set to a minimum to save resources. Please increase those number in production.
+
 The dependencies of the module are :
 * puppetlabs-firewall
 * puppetlabs-ntp
@@ -99,6 +101,8 @@ Please fell free to submit any suggestions using the GitHub "Pull Request".
 
 ##TODO
 
+* Fix ip6tables Firewall error with iptables < v1.3
 * Automate the installation script
 * Add Passanger support for the Puppet Master node
 * Develop a smarter Nginx+Unicorn Module 
+
