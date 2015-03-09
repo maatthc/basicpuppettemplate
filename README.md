@@ -3,7 +3,7 @@
 #### Table of Contents
 
 1. [Overview](#overview)
-2. [Module Description]
+2. [Module Description](#module-description)
 3. [Setup - The basics of getting started with rea](#setup)
     * [What rea affects](#what-rea-affects)
     * [Setup requirements](#setup-requirements)
@@ -20,7 +20,7 @@ This is a simple Puppet Template for setting up a Linux (CentOS 5.9) with Nginx,
 
 This module will provide a Web site running on the Agent server at port 80 and deliver the Ruby App available at git://github.com/tnh/simple-sinatra-app.git .
 
-This module has validated using "puppet-lint" but the "line has more than 80 characters" item has ignored.
+This module has been validated using "puppet-lint" but the "line has more than 80 characters" item has ignored.
 
 The dependencies of the module are :
 * puppetlabs-firewall
@@ -91,7 +91,7 @@ This module uses modules available at Forge (https://forge.puppetlabs.com/) as m
 
 ## Limitations
 
-This module was only tested using CentOs 5.9 but there is a draft support for Debian or Ubuntu using Hiera files.
+This module has been tested only using CentOs 5.9. Although there is a draft support for Debian or Ubuntu using Hiera files.
 
 ## Development
 
