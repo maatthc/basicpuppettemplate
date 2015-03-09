@@ -1,4 +1,4 @@
 # Class
-class basicpuppettemplate::profiles::unicorn {
+class rea::profiles::unicorn {
 
 }

@@ -12,7 +12,7 @@ then
 fi
 if [ -z $2 ]
 then
-        current_name="basicpuppettemplate"
+        current_name="rea"
 else
         current_name=$2
 fi        

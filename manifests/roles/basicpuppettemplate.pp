@@ -1,8 +1,8 @@
 # Class
-class basicpuppettemplate::roles::basicpuppettemplate  inherits
-        basicpuppettemplate::roles::base{
-        class { '::basicpuppettemplate::profiles::nginx': }
-        class { '::basicpuppettemplate::profiles::unicorn': }
-        class { '::basicpuppettemplate::profiles::ruby': }
-        class { '::basicpuppettemplate::profiles::simplesinatra': }
+class rea::roles::rea  inherits
+        rea::roles::base{
+        class { '::rea::profiles::nginx': }
+        class { '::rea::profiles::unicorn': }
+        class { '::rea::profiles::ruby': }
+        class { '::rea::profiles::simplesinatra': }
 }

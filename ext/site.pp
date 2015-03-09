@@ -1,9 +1,9 @@
 #node /^www\d+\.example\.com\.au$/ {
-#        class { '::basicpuppettemplate': }
+#        class { '::rea': }
 #}
 
 #node 'default' {
-#        class { '::basicpuppettemplate': }
+#        class { '::rea': }
 #}
 node default {
             hiera_include('classes','')

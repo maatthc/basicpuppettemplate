@@ -1,5 +1,5 @@
 # Class
-class basicpuppettemplate::profiles::base {
+class rea::profiles::base {
         class { 'base::packages': }
 }
 

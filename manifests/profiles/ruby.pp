@@ -1,5 +1,5 @@
 # Class
-class basicpuppettemplate::profiles::ruby {
+class rea::profiles::ruby {
         # Ensure the required gems are present
         $gems = ['bundler', 'sinatra', 'rack']
         package { $gems:

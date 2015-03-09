@@ -1,12 +1,12 @@
 {
-  "name": "maat-basicpuppettemplate",
+  "name": "maat-rea",
   "version": "0.1.1",
   "author": "Alexandre Andrade Silva <aleandrade@gmail.com>",
   "summary": "Basic template for initial Puppet Linux Setup running nginx and Sinatra application",
   "license": "Apache 2.0",
-  "source": "https://github.com/maatthc/basicpuppettemplate",
-  "project_page": "https://github.com/maatthc/basicpuppettemplate",
-  "issues_url": "https://github.com/maatthc/basicpuppettemplate/issues",
+  "source": "https://github.com/maatthc/rea",
+  "project_page": "https://github.com/maatthc/rea",
+  "issues_url": "https://github.com/maatthc/rea/issues",
   "dependencies": [
     {"version_requirement":">= 1.0.0","name":"puppetlabs/stdlib"},
     {"version_requirement":">= 1.4.0","name":"puppetlabs/firewall"},

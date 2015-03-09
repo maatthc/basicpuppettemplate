@@ -1,5 +1,5 @@
 # Class
-class basicpuppettemplate::base::packages {
+class rea::base::packages {
         $packages_install = hiera_array('packages_install', '')
         $packages_purge = hiera_array('packages_purge', '')
         package { $packages_install:

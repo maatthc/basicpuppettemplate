@@ -11,4 +11,4 @@
     - %{hostname}        # Per node, example hieradata/www.example.com.au.yaml
 
 :yaml:
-        :datadir: '/etc/puppet/modules/basicpuppettemplate/hieradata'
+        :datadir: '/etc/puppet/modules/rea/hieradata'

@@ -1,4 +1,4 @@
 # Class
-class basicpuppettemplate::roles::base {
+class rea::roles::base {
         class { 'profiles::base': }
 }

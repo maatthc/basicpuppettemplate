@@ -1,6 +1,6 @@
-# == Class: basicpuppettemplate
+# == Class: rea
 #
-# Full description of class basicpuppettemplate here.
+# Full description of class rea here.
 #
 # === Parameters
 #
@@ -23,7 +23,7 @@
 #
 # === Examples
 #
-#  class { 'basicpuppettemplate':
+#  class { 'rea':
 #    servers => [ 'pool.ntp.org', 'ntp.local.company.com' ],
 #  }
 #
@@ -32,6 +32,6 @@
 # Alexandre Andrade <aleandrade@gmail.com>
 #
 #
-class basicpuppettemplate {
-        class { 'roles::basicpuppettemplate': }
+class rea {
+        class { 'roles::rea': }
 }

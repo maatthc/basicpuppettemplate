@@ -1,4 +1,4 @@
 # == Class:
-class basicpuppettemplate::profiles::simplesinatra {
+class rea::profiles::simplesinatra {
 
 }
