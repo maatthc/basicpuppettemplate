@@ -55,6 +55,11 @@ firewall::trusted_networks:
   - '192.168.1.0/24'
   - '10.1.0.0/24'
 
-
 rea::profiles::simplesinatra::path_to_sinatra_app: /var/sinatra  
 rea::profiles::simplesinatra::sinatra_server_name: www.example.com.au
+rea::profiles::ruby::gems:
+  - 'bundler'
+  - 'rack'
+  - 'sinatra'
+  - 'god'
+  - 'unicorn'
