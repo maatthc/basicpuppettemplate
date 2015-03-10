@@ -1,8 +1,7 @@
 # Class that manages the Ruby Gems
 class rea::profiles::ruby (
-                $gems 
+                $gems
         ){
-        $gems = ['bundler', 'rack', 'sinatra', 'god', 'unicorn']
         package { $gems:
                   ensure        => 'installed',
                   allow_virtual => false,
