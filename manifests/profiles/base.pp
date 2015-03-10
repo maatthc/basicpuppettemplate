@@ -17,7 +17,7 @@ class rea::profiles::base (
         # Firewall basics
         # iptables purge
         resources { 'firewall':
-                purge   => true
+                  purge => true,
         }
         Firewall {
                 before  => Class['rea::base::fw_pos'],

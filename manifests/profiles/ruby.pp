@@ -1,7 +1,7 @@
 # Class that manages the Ruby Gems
 class rea::profiles::ruby {
         # Ensure the required gems are present
-        $gems = ['bundler', 'rack', 'sinatra', 'unicorn', 'god']
+        $gems = ['bundler', 'rack', 'sinatra', 'god', 'unicorn']
         package { $gems:
                   ensure        => 'installed',
                   allow_virtual => false,
