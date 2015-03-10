@@ -34,9 +34,12 @@ The dependencies of the module are :
 ## Setup
 Please follow this steps as "root" :
 
+*    cd /etc/puppet/modules
 *    curl -L https://github.com/maatthc/rea/tarball/master -o maat-rea.tgz
 *    puppet module install maat-rea.tgz
+*    rm /etc/puppet/manifests/site.pp
 *    ln -s /etc/puppet/modules/rea/ext/site.pp /etc/puppet/manifests/site.pp
+*    rm /etc/puppet/hiera.yaml
 *    ln -s /etc/puppet/modules/rea/ext/hiera.yaml /etc/puppet/hiera.yaml
 *    Add to the main session of /etc/puppet/puppet.conf:
 
