@@ -47,8 +47,8 @@ class rea::profiles::unicorn {
         path    => '/usr/local/bin/:/bin/:/usr/bin/:/sbin/',
       } ->
       exec { 'sleep_after':
-        command      => 'sleep 5',
-        path => '/usr/local/bin/:/bin/:/usr/bin/:/sbin/',
+        command => 'sleep 5',
+        path    => '/usr/local/bin/:/bin/:/usr/bin/:/sbin/',
       } ->
       service { 'god':
         ensure  => running,
