@@ -1,13 +1,11 @@
 #!/bin/bash
-          if [ -f /etc/puppet/puppet.conf ]
+          if [ -f /etc/puppetlabs/puppet/puppet.conf ]
           then
-                echo "Puppet Agent is already installed. Exiting..."
+                echo "Puppet Agent is already installed. Aborting..."
           else
                 # Install Puppet Master
-                wget -q https://apt.puppetlabs.com/puppetlabs-release-precise.deb -O puppetlabs-release-precise.deb&& \
-                sudo dpkg -i puppetlabs-release-precise.deb && \
-                sudo apt-get update &&\
-                sudo apt-get install -yq puppet
+                sudo rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm && \
+                sudo yum -y install puppet-agent && \
 
                 # Configure /etc/hosts file
                 if cat /etc/hosts |grep master 2> /dev/null
@@ -19,7 +17,7 @@
                         echo "10.0.1.50    master.example.com  master" | sudo tee --append /etc/hosts 2> /dev/null && \
                         echo "10.0.1.51    agent.example.com  agent" | sudo tee --append /etc/hosts 2> /dev/null
                 fi
-                /bin/sed -i.bak 's|\[main\]|\[main\]\n\n#ADDED by VAGRANT\n# \n server=master \n|' /etc/puppet/puppet.conf 
+                /bin/sed -i.bak 's|\[main\]|\[main\]\n\n#ADDED by VAGRANT\n# \n server=master \n|' /etc/puppetlabs/puppet/puppet.conf
                 /bin/sed -i.bak 's|START=no|START=yes|' /etc/default/puppet 
                 service puppet restart
 
