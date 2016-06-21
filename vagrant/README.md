@@ -1,7 +1,8 @@
 # Vagrant
     https://www.vagrantup.com/
 ## Images
-    
+### Ubuntu : ashicorp/precise32
+### CentOs7: centos/7
 ## Install
     vagrant login
     vagrant init ashicorp/precise32

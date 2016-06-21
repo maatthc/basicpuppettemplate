@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "hashicorp/precise32"
+  #config.vm.box = "hashicorp/precise32"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -69,16 +69,28 @@ Vagrant.configure(2) do |config|
   #   sudo apt-get install -y apache2
   # SHELL
   #
-  config.vm.define 'master' do |master|
-        master.vm.network "private_network", ip: "10.0.1.50"
-        master.vm.hostname = 'master'
-        master.vm.box = "hashicorp/precise32"
-        master.vm.provision "shell", path: 'provision_master.sh'
+  config.vm.define 'master_ubuntu' do |master_ubuntu|
+        master_ubuntu.vm.network "private_network", ip: "10.0.1.50"
+        master_ubuntu.vm.hostname = 'master_ubuntu'
+        master_ubuntu.vm.box = "hashicorp/precise32"
+        master_ubuntu.vm.provision "shell", path: 'provision_master_ubuntu.sh'
   end
-   config.vm.define 'agent' do |agent|
-        agent.vm.network "private_network", ip: "10.0.1.51"
-        agent.vm.hostname = 'agent'
-        agent.vm.box = "hashicorp/precise32"
-        agent.vm.provision "shell", path: 'provision_agent.sh'
+  config.vm.define 'webserver_ubuntu' do |webserver_ubuntu|
+        webserver_ubuntu.vm.network "private_network", ip: "10.0.1.51"
+        webserver_ubuntu.vm.hostname = 'webserver_ubuntu'
+        webserver_ubuntu.vm.box = "hashicorp/precise32"
+        webserver_ubuntu.vm.provision "shell", path: 'provision_webserver_ubuntu.sh'
+  end
+  config.vm.define 'master_centos' do |master_centos|
+        master_centos.vm.network "private_network", ip: "10.0.1.50"
+        master_centos.vm.hostname = 'master_centos'
+        master_centos.vm.box = "centos/7"
+        master_centos.vm.provision "shell", path: 'provision_master_centos.sh'
+  end
+  config.vm.define 'webserver_centos' do |webserver_centos|
+        webserver_centos.vm.network "private_network", ip: "10.0.1.51"
+        webserver_centos.vm.hostname = 'webserver_centos'
+        webserver_centos.vm.box = "centos/7"
+        webserver_centos.vm.provision "shell", path: 'provision_webserver_centos.sh'
   end
 end
