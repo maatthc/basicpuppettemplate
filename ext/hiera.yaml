@@ -4,11 +4,12 @@
 :logger: console
 
 :hierarchy:
-    - common             # all nodes will use hieradata/common.yaml
-    - %{::osfamily}-%{::operatingsystem}-%{::operatingsystemrelease} # subset per OS
-    - %{::osfamily}-%{::operatingsystem} # subset per OS
-    - %{osfamily}         # subset per OS, example hieradata/RedHat.yaml
-    - %{hostname}        # Per node, example hieradata/www.example.com.au.yaml
 
-:yaml:
-        :datadir: '/etc/puppet/modules/rea/hieradata'
+- ./%{::hostname}  # Per node, example hieradata/www.example.com.au.yaml
+- ./%{::osfamily}/%{::operatingsystem}/%{::operatingsystemrelease}  # subset per OS version
+- ./%{::osfamily}/%{::operatingsystem}  # subset per OS
+- ./%{::osfamily} # subset per OS, example hieradata/RedHat.yaml
+- common	 # all nodes will use hieradata/common.yaml
+
+#:yaml:
+#        :datadir: '%{master-code-dir}/environments/%{environment}/hieradata/'
