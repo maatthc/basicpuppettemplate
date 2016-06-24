@@ -1,0 +1,8 @@
+[program:unicorn]
+command=/usr/local/bin/unicorn -c <%= @path_to_sinatra_app %>/unicorn.conf
+directory=<%= @path_to_sinatra_app %>
+process_name=%(program_name)s
+autostart=true
+autorestart=true
+stopsignal=QUIT
+user=unicorn
