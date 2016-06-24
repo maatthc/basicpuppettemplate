@@ -3,8 +3,8 @@ class rea::base::packages {
         $packages_install = hiera_array('packages_install', '')
         $packages_purge = hiera_array('packages_purge', '')
         yumrepo { 'epel':
-            baseurl  => 'http://download.fedoraproject.org/pub/epel/5/i386/',
-            descr    => 'Extra Packages for Enterprise Linux 5 ',
+            baseurl  => 'http://download.fedoraproject.org/pub/epel/7/$basearch',
+            descr    => 'Extra Packages for Enterprise Linux 7 ',
             enabled  => 1,
             gpgcheck => 0
         } ->

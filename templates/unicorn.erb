@@ -4,7 +4,8 @@
     listen '<%= @path_to_sinatra_app %>/tmp/unicorn.sock', :backlog => 512
     timeout 120
     pid "<%= @path_to_sinatra_app %>/tmp/unicorn.pid"
-    
+    stderr_path "<%= @path_to_sinatra_app %>/tmp/unicorn.stderr.log"
+    stdout_path "<%= @path_to_sinatra_app %>/tmp/unicorn.stdout.log"
     preload_app true
     if GC.respond_to?(:copy_on_write_friendly=)
       GC.copy_on_write_friendly = true

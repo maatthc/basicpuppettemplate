@@ -33,5 +33,5 @@
 #
 #
 class rea {
-        class { 'roles::rea': }
+        class { 'rea::roles::rea': }
 }

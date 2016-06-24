@@ -1,13 +1,13 @@
 # Class Base - Define what is going to be applied to all hosts
 # Most of the settings are in the Hiera data files
-class rea::profiles::base (
+class rea::profiles::base (  
           $myusers,
           $mygroups,
           $ssh_authorized_keys
         ){
         # Define which packages should be installed and 
         # which shouln't be present
-        class { 'base::packages': }
+        class { 'rea::base::packages': }
 
         # Define user/groups to be created.
         create_resources(group, $mygroups)
@@ -26,7 +26,9 @@ class rea::profiles::base (
         class { ['rea::base::fw_pre', 'rea::base::fw_pos']: }
 
         # Define SSHD configuration for all servers
-        class { 'ssh': }
+        class { 'ssh': 
+        storeconfigs_enabled => false,
+        }
         firewall { '100 allow SSHD access':
                 port   => [22],
                 proto  => tcp,
@@ -41,5 +43,11 @@ class rea::profiles::base (
                 dport  => '123',
                 proto  => 'udp',
                 action => 'accept',
+        }
+        # Set up the default time zone
+        $tz = hiera('timezone')
+        file {'/etc/localtime': ensure => link, target => "/usr/share/zoneinfo/${tz}"}
+        if $osfamily == "RedHat" {
+            class { selinux: mode => permissive }
         }
 }

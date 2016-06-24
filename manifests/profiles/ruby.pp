@@ -7,7 +7,7 @@ class rea::profiles::ruby (
                   allow_virtual => false,
                   provider      => 'gem',
         }
-        # Ensure the SO packages are present
+        # Ensure the OS packages are present
         class { '::ruby':
                   rubygems_update => false,
         }
