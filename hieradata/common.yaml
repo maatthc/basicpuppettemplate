@@ -12,26 +12,6 @@ ssh::server_options:
         AuthorizedKeysFile: '.ssh/authorized_keys'
         RSAAuthentication: 'yes'
         PubkeyAuthentication: 'yes'
-rea::profiles::base::myusers:
-  devops:
-    ensure: present
-    home: /home/devops
-    shell: /bin/bash
-    uid: 10001
-    gid: 10001
-    groups:
-      - wheel
-      - operations
-    password: YitmwKpPL5FDh6s32Yb08.
-    managehome: true
-  unicorn:
-    ensure: present
-    home: /home/unicorn
-    shell: /sbin/nologin
-    uid: 10002
-    gid: 10002
-    groups:
-      - unicorn
 rea::profiles::base::mygroups:
   operations:
     ensure: present
@@ -39,6 +19,9 @@ rea::profiles::base::mygroups:
   unicorn:
     ensure: present
     gid: 10002
+  nginx:
+    ensure: present
+    gid: 10003
 rea::profiles::base::ssh_authorized_keys:
   'devops0@putty':
     user: 'devops'
@@ -50,6 +33,7 @@ ntp::servers:
   - 1.us.pool.ntp.org iburst
   - 2.us.pool.ntp.org iburst
   - 3.us.pool.ntp.org iburst
+timezone: "Australia/Melbourne"
 
 firewall::trusted_networks:
   - '192.168.1.0/24'

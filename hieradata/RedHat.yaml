@@ -1,3 +1,34 @@
 ---
-packages_install: ['vim-common', 'iptables', 'ruby-devel', 'git', 'gcc', 'nginx'] 
-packages_purge: ['gpm', 'cups', 'httpd', 'xinetd', 'portmap']
+classes : ['rea']
+packages_install: ['vim-common', 'iptables', 'ruby-devel', 'git', 'gcc', 'nginx', 'psmisc', 'iptables-services'] 
+packages_purge: ['gpm', 'cups', 'httpd', 'xinetd', 'portmap','firewalld']
+firewall::params::package_name: 'iptables-services'
+
+rea::profiles::base::myusers:
+  devops:
+    ensure: present
+    home: /home/devops
+    shell: /bin/bash
+    uid: 10001
+    gid: 10001
+    groups:
+      - wheel
+      - operations
+    password: YitmwKpPL5FDh6s32Yb08.
+    managehome: true
+  unicorn:
+    ensure: present
+    home: /home/unicorn
+    shell: /sbin/nologin
+    uid: 10002
+    gid: 10002
+    groups:
+      - unicorn
+  nginx:
+    ensure: present
+    home: /var/lib/nginx
+    shell: /usr/sbin/nologin
+    uid: 10003
+    gid: 10003
+    groups:
+      - nginx

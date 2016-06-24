@@ -1,3 +1,33 @@
 ---
-packages_install: ['git-core', 'vim-common', 'iptables', 'ruby-devel', 'ruby-shadow', 'rubygem-json', 'libselinux-ruby', 'ruby-libs', 'ruby-augeas', 'ruby-rdoc', 'ruby-irb', 'glibc-devel', 'glibc-headers', 'nginx-full']
+classes : ['rea']
+packages_install: ['git-core', 'vim-common', 'iptables', 'iptables-persistent' ,'ruby-shadow', 'ruby-augeas', 'ruby-dev' ,'nginx-full']
 packages_purge: ['gpm', 'cups', 'apache2', 'xinetd', 'portmap']
+
+rea::profiles::base::myusers:
+  devops:
+    ensure: present
+    home: /home/devops
+    shell: /bin/bash
+    uid: 10001
+    gid: 10001
+    groups:
+      - admin
+      - operations
+    password: YitmwKpPL5FDh6s32Yb08.
+    managehome: true
+  unicorn:
+    ensure: present
+    home: /home/unicorn
+    shell: /usr/sbin/nologin
+    uid: 10002
+    gid: 10002
+    groups:
+      - unicorn
+  nginx:
+    ensure: present
+    home: /var/lib/nginx
+    shell: /usr/sbin/nologin
+    uid: 10003
+    gid: 10003
+    groups:
+      - nginx
