@@ -110,7 +110,7 @@ function setup_puppet {
                     sudo rm $PUPPET_BASE/hiera.yaml
             fi
             sudo ln -sf $PUPPET_CODE/modules/rea/ext/hiera.yaml $PUPPET_BASE/hiera.yaml
-            if [ -f $PUPPET_HIERADATA ]; then cp $PUPPET_CODE/modules/rea/hieradata/* $PUPPET_HIERADATA; fi
+            if [ -d $PUPPET_HIERADATA ]; then cp $PUPPET_CODE/modules/rea/hieradata/* $PUPPET_HIERADATA; fi
             if [ -s $PUPPET_CONF ]; then sudo /bin/sed -i.bak 's|-Xms2g -Xmx2g|-Xms512m -Xmx512m|' $PUPPET_CONF; fi
             if [ $1 = "ubuntu" ] ; then sudo rm -r  /var/lib/puppet/ssl/ && sudo puppet cert -g master-ubuntu --dns_alt_names=master,puppet,puppet-master,puppet.mgmt && \
                 echo -e ":yaml:\n        :datadir: '/etc/puppet/modules/rea/hieradata/'" >> $PUPPET_BASE/hiera.yaml ; fi
