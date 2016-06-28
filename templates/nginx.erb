@@ -48,6 +48,7 @@ http {
   server {
     # replace with your domain name
     server_name <%= @sinatra_server_name %>;
+    server_tokens off;
     # replace this with your static Sinatra app files, root + public
     root <%= @path_to_sinatra_app %>/public;
     # port to listen for requests on
