@@ -1,0 +1,610 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "CloudFormation Template to create the infrastructure for a Ruby Sinada App with LoadBalancer and AutoScaling",
+
+  "Parameters" : {
+
+    "WebAppContent": {
+      "Description" : "Compressed version of the Web App Repo.",
+      "Type": "String",
+      "Default" : "https://github.com/rea-cruitment/simple-sinatra-app/tarball/master"
+    },
+    "WebAppDeployFolder": {
+      "Description" : "Sinatra Web App home directory",
+      "Type": "String",
+      "Default" : "/var/sinatra"
+    },
+
+    "KeyName": {
+      "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instances",
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "ConstraintDescription" : "must be the name of an existing EC2 KeyPair."
+    },
+
+    "InstanceType" : {
+      "Description" : "WebServer EC2 instance type",
+      "Type" : "String",
+      "Default" : "t1.micro",
+      "AllowedValues" : [ "t1.micro", "t2.nano", "t2.micro", "t2.small", "t2.medium", "t2.large", "m1.small", "m1.medium", "m1.large", "m1.xlarge", "m2.xlarge", "m2.2xlarge", "m2.4xlarge", "m3.medium", "m3.large", "m3.xlarge", "m3.2xlarge", "m4.large", "m4.xlarge", "m4.2xlarge", "m4.4xlarge", "m4.10xlarge", "c1.medium", "c1.xlarge", "c3.large", "c3.xlarge", "c3.2xlarge", "c3.4xlarge", "c3.8xlarge", "c4.large", "c4.xlarge", "c4.2xlarge", "c4.4xlarge", "c4.8xlarge", "g2.2xlarge", "g2.8xlarge", "r3.large", "r3.xlarge", "r3.2xlarge", "r3.4xlarge", "r3.8xlarge", "i2.xlarge", "i2.2xlarge", "i2.4xlarge", "i2.8xlarge", "d2.xlarge", "d2.2xlarge", "d2.4xlarge", "d2.8xlarge", "hi1.4xlarge", "hs1.8xlarge", "cr1.8xlarge", "cc2.8xlarge", "cg1.4xlarge"],
+      "ConstraintDescription" : "must be a valid EC2 instance type."
+    },
+
+    "SSHLocation": {
+      "Description": "The IP address range that can be used to SSH to the EC2 instances",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "18",
+      "Default": "0.0.0.0/0",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid IP CIDR range of the form x.x.x.x/x."
+    },
+
+    "WebServerCapacity": {
+      "Default": "1",
+      "Description" : "The initial number of WebServer instances",
+      "Type": "Number",
+      "MinValue": "1",
+      "MaxValue": "5",
+      "ConstraintDescription" : "must be between 1 and 5 EC2 instances."
+    }
+
+  },
+
+  "Mappings" : {
+    "AWSInstanceType2Arch" : {
+      "t1.micro"    : { "Arch" : "PV64"   },
+      "t2.nano"     : { "Arch" : "HVM64"  },
+      "t2.micro"    : { "Arch" : "HVM64"  },
+      "t2.small"    : { "Arch" : "HVM64"  },
+      "t2.medium"   : { "Arch" : "HVM64"  },
+      "t2.large"    : { "Arch" : "HVM64"  },
+      "m1.small"    : { "Arch" : "PV64"   },
+      "m1.medium"   : { "Arch" : "PV64"   },
+      "m1.large"    : { "Arch" : "PV64"   },
+      "m1.xlarge"   : { "Arch" : "PV64"   },
+      "m2.xlarge"   : { "Arch" : "PV64"   },
+      "m2.2xlarge"  : { "Arch" : "PV64"   },
+      "m2.4xlarge"  : { "Arch" : "PV64"   },
+      "m3.medium"   : { "Arch" : "HVM64"  },
+      "m3.large"    : { "Arch" : "HVM64"  },
+      "m3.xlarge"   : { "Arch" : "HVM64"  },
+      "m3.2xlarge"  : { "Arch" : "HVM64"  },
+      "m4.large"    : { "Arch" : "HVM64"  },
+      "m4.xlarge"   : { "Arch" : "HVM64"  },
+      "m4.2xlarge"  : { "Arch" : "HVM64"  },
+      "m4.4xlarge"  : { "Arch" : "HVM64"  },
+      "m4.10xlarge" : { "Arch" : "HVM64"  },
+      "c1.medium"   : { "Arch" : "PV64"   },
+      "c1.xlarge"   : { "Arch" : "PV64"   },
+      "c3.large"    : { "Arch" : "HVM64"  },
+      "c3.xlarge"   : { "Arch" : "HVM64"  },
+      "c3.2xlarge"  : { "Arch" : "HVM64"  },
+      "c3.4xlarge"  : { "Arch" : "HVM64"  },
+      "c3.8xlarge"  : { "Arch" : "HVM64"  },
+      "c4.large"    : { "Arch" : "HVM64"  },
+      "c4.xlarge"   : { "Arch" : "HVM64"  },
+      "c4.2xlarge"  : { "Arch" : "HVM64"  },
+      "c4.4xlarge"  : { "Arch" : "HVM64"  },
+      "c4.8xlarge"  : { "Arch" : "HVM64"  },
+      "g2.2xlarge"  : { "Arch" : "HVMG2"  },
+      "g2.8xlarge"  : { "Arch" : "HVMG2"  },
+      "r3.large"    : { "Arch" : "HVM64"  },
+      "r3.xlarge"   : { "Arch" : "HVM64"  },
+      "r3.2xlarge"  : { "Arch" : "HVM64"  },
+      "r3.4xlarge"  : { "Arch" : "HVM64"  },
+      "r3.8xlarge"  : { "Arch" : "HVM64"  },
+      "i2.xlarge"   : { "Arch" : "HVM64"  },
+      "i2.2xlarge"  : { "Arch" : "HVM64"  },
+      "i2.4xlarge"  : { "Arch" : "HVM64"  },
+      "i2.8xlarge"  : { "Arch" : "HVM64"  },
+      "d2.xlarge"   : { "Arch" : "HVM64"  },
+      "d2.2xlarge"  : { "Arch" : "HVM64"  },
+      "d2.4xlarge"  : { "Arch" : "HVM64"  },
+      "d2.8xlarge"  : { "Arch" : "HVM64"  },
+      "hi1.4xlarge" : { "Arch" : "HVM64"  },
+      "hs1.8xlarge" : { "Arch" : "HVM64"  },
+      "cr1.8xlarge" : { "Arch" : "HVM64"  },
+      "cc2.8xlarge" : { "Arch" : "HVM64"  }
+    },
+
+    "AWSInstanceType2NATArch" : {
+      "t1.micro"    : { "Arch" : "NATPV64"   },
+      "t2.nano"     : { "Arch" : "NATHVM64"  },
+      "t2.micro"    : { "Arch" : "NATHVM64"  },
+      "t2.small"    : { "Arch" : "NATHVM64"  },
+      "t2.medium"   : { "Arch" : "NATHVM64"  },
+      "t2.large"    : { "Arch" : "NATHVM64"  },
+      "m1.small"    : { "Arch" : "NATPV64"   },
+      "m1.medium"   : { "Arch" : "NATPV64"   },
+      "m1.large"    : { "Arch" : "NATPV64"   },
+      "m1.xlarge"   : { "Arch" : "NATPV64"   },
+      "m2.xlarge"   : { "Arch" : "NATPV64"   },
+      "m2.2xlarge"  : { "Arch" : "NATPV64"   },
+      "m2.4xlarge"  : { "Arch" : "NATPV64"   },
+      "m3.medium"   : { "Arch" : "NATHVM64"  },
+      "m3.large"    : { "Arch" : "NATHVM64"  },
+      "m3.xlarge"   : { "Arch" : "NATHVM64"  },
+      "m3.2xlarge"  : { "Arch" : "NATHVM64"  },
+      "m4.large"    : { "Arch" : "NATHVM64"  },
+      "m4.xlarge"   : { "Arch" : "NATHVM64"  },
+      "m4.2xlarge"  : { "Arch" : "NATHVM64"  },
+      "m4.4xlarge"  : { "Arch" : "NATHVM64"  },
+      "m4.10xlarge" : { "Arch" : "NATHVM64"  },
+      "c1.medium"   : { "Arch" : "NATPV64"   },
+      "c1.xlarge"   : { "Arch" : "NATPV64"   },
+      "c3.large"    : { "Arch" : "NATHVM64"  },
+      "c3.xlarge"   : { "Arch" : "NATHVM64"  },
+      "c3.2xlarge"  : { "Arch" : "NATHVM64"  },
+      "c3.4xlarge"  : { "Arch" : "NATHVM64"  },
+      "c3.8xlarge"  : { "Arch" : "NATHVM64"  },
+      "c4.large"    : { "Arch" : "NATHVM64"  },
+      "c4.xlarge"   : { "Arch" : "NATHVM64"  },
+      "c4.2xlarge"  : { "Arch" : "NATHVM64"  },
+      "c4.4xlarge"  : { "Arch" : "NATHVM64"  },
+      "c4.8xlarge"  : { "Arch" : "NATHVM64"  },
+      "g2.2xlarge"  : { "Arch" : "NATHVMG2"  },
+      "g2.8xlarge"  : { "Arch" : "NATHVMG2"  },
+      "r3.large"    : { "Arch" : "NATHVM64"  },
+      "r3.xlarge"   : { "Arch" : "NATHVM64"  },
+      "r3.2xlarge"  : { "Arch" : "NATHVM64"  },
+      "r3.4xlarge"  : { "Arch" : "NATHVM64"  },
+      "r3.8xlarge"  : { "Arch" : "NATHVM64"  },
+      "i2.xlarge"   : { "Arch" : "NATHVM64"  },
+      "i2.2xlarge"  : { "Arch" : "NATHVM64"  },
+      "i2.4xlarge"  : { "Arch" : "NATHVM64"  },
+      "i2.8xlarge"  : { "Arch" : "NATHVM64"  },
+      "d2.xlarge"   : { "Arch" : "NATHVM64"  },
+      "d2.2xlarge"  : { "Arch" : "NATHVM64"  },
+      "d2.4xlarge"  : { "Arch" : "NATHVM64"  },
+      "d2.8xlarge"  : { "Arch" : "NATHVM64"  },
+      "hi1.4xlarge" : { "Arch" : "NATHVM64"  },
+      "hs1.8xlarge" : { "Arch" : "NATHVM64"  },
+      "cr1.8xlarge" : { "Arch" : "NATHVM64"  },
+      "cc2.8xlarge" : { "Arch" : "NATHVM64"  }
+    }
+,
+    "AWSRegionArch2AMI" : {
+      "us-east-1"        : {"PV64" : "ami-8ff710e2", "HVM64" : "ami-f5f41398", "HVMG2" : "ami-4afd1d27"},
+      "us-west-2"        : {"PV64" : "ami-eff1028f", "HVM64" : "ami-d0f506b0", "HVMG2" : "ami-ee897b8e"},
+      "us-west-1"        : {"PV64" : "ami-ac85fbcc", "HVM64" : "ami-6e84fa0e", "HVMG2" : "ami-69106909"},
+      "eu-west-1"        : {"PV64" : "ami-23ab2250", "HVM64" : "ami-b0ac25c3", "HVMG2" : "ami-936de5e0"},
+      "eu-central-1"     : {"PV64" : "ami-27c12348", "HVM64" : "ami-d3c022bc", "HVMG2" : "ami-8e7092e1"},
+      "ap-northeast-1"   : {"PV64" : "ami-26160d48", "HVM64" : "ami-29160d47", "HVMG2" : "ami-91809aff"},
+      "ap-northeast-2"   : {"PV64" : "NOT_SUPPORTED", "HVM64" : "ami-cf32faa1", "HVMG2" : "NOT_SUPPORTED"},
+      "ap-southeast-1"   : {"PV64" : "ami-f3dd0a90", "HVM64" : "ami-1ddc0b7e", "HVMG2" : "ami-3c30e75f"},
+      "ap-southeast-2"   : {"PV64" : "ami-8f94b9ec", "HVM64" : "ami-0c95b86f", "HVMG2" : "ami-543d1137"},
+      "sa-east-1"        : {"PV64" : "ami-e188018d", "HVM64" : "ami-fb890097", "HVMG2" : "NOT_SUPPORTED"},
+      "cn-north-1"       : {"PV64" : "ami-77a46e1a", "HVM64" : "ami-05a66c68", "HVMG2" : "NOT_SUPPORTED"}
+    }
+
+  },
+
+
+  "Resources" : {
+
+    "ElasticLoadBalancer" : {
+      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties" : {
+        "AvailabilityZones" : { "Fn::GetAZs" : "" },
+        "CrossZone" : "true",
+        "LBCookieStickinessPolicy" : [ {
+          "PolicyName" : "CookieBasedPolicy",
+          "CookieExpirationPeriod" : "30"
+        } ],
+        "Listeners" : [ {
+          "LoadBalancerPort" : "80",
+          "InstancePort" : "80",
+          "Protocol" : "HTTP",
+          "PolicyNames" : [ "CookieBasedPolicy" ]
+        } ],
+        "HealthCheck" : {
+          "Target" : "HTTP:80/",
+          "HealthyThreshold" : "2",
+          "UnhealthyThreshold" : "5",
+          "Interval" : "10",
+          "Timeout" : "5"
+        }
+      }
+    },
+
+    "WebServerSecurityGroup" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupDescription" : "Enable HTTP access via port 80 locked down to the load balancer + SSH access",
+        "SecurityGroupIngress" : [
+          {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : "80", "SourceSecurityGroupOwnerId" : {"Fn::GetAtt" : ["ElasticLoadBalancer", "SourceSecurityGroup.OwnerAlias"]},"SourceSecurityGroupName" : {"Fn::GetAtt" : ["ElasticLoadBalancer", "SourceSecurityGroup.GroupName"]}},
+          {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : { "Ref" : "SSHLocation"}}
+        ]
+      }
+    },
+
+    "WebServerGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "AvailabilityZones" : { "Fn::GetAZs" : "" },
+        "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
+        "MinSize" : "0",
+        "MaxSize" : "5",
+        "DesiredCapacity" : { "Ref" : "WebServerCapacity" },
+        "LoadBalancerNames" : [ { "Ref" : "ElasticLoadBalancer" } ]
+      },
+      "CreationPolicy" : {
+        "ResourceSignal" : {
+          "Timeout" : "PT15M"
+        }
+      },
+      "UpdatePolicy": {
+        "AutoScalingRollingUpdate": {
+          "MinInstancesInService": "1",
+          "MaxBatchSize": "1",
+          "PauseTime" : "PT15M",
+          "WaitOnResourceSignals": "true"
+        }
+      }
+    },
+
+    "LaunchConfig": {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Metadata" : {
+        "AWS::CloudFormation::Init" : {
+          "configSets" : {
+            "app_install" : ["install_cfn", "install_webapp" ]
+          },
+          "install_cfn" : {
+            "files": {
+              "/etc/cfn/cfn-hup.conf": {
+                "content": { "Fn::Join": [ "", [
+                  "[main]\n",
+                  "stack=", { "Ref": "AWS::StackId" }, "\n",
+                  "region=", { "Ref": "AWS::Region" }, "\n"
+                ]]},
+                "mode"  : "000400",
+                "owner" : "root",
+                "group" : "root"
+              },
+              "/etc/cfn/hooks.d/cfn-auto-reloader.conf": {
+                "content": { "Fn::Join": [ "", [
+                  "[cfn-auto-reloader-hook]\n",
+                  "triggers=post.update\n",
+                  "path=Resources.LaunchConfig.Metadata.AWS::CloudFormation::Init\n",
+                  "action=/opt/aws/bin/cfn-init -v ",
+                          "         --stack ", { "Ref" : "AWS::StackName" },
+                          "         --resource LaunchConfig ",
+                          "         --configsets app_install ",
+                          "         --region ", { "Ref" : "AWS::Region" }, "\n"
+                ]]},          
+                "mode"  : "000400",
+                "owner" : "root",
+                "group" : "root"
+              }
+            },
+            "services" : {
+              "sysvinit" : {
+                "cfn-hup" : { "enabled" : "true", "ensureRunning" : "true",
+                              "files" : ["/etc/cfn/cfn-hup.conf", "/etc/cfn/hooks.d/cfn-auto-reloader.conf"]}
+              }
+            }
+          },
+
+          "install_webapp" : {
+            "packages" : {
+              "yum" : {
+                "nginx"       : [],
+                "gcc"       : [],
+                "ruby-devel"     : []
+              },
+              "rubygems" : { "bundler" : [] , "sinatra" : [] , "rack" : [] , "unicorn" : [] },
+              "python" : { "supervisor" : [] }
+            },
+            "sources" : {
+              "/var/sinatra" : { "Ref" : "WebAppContent" }
+            },
+            "files" : {
+              "/etc/init.d/supervisord" : {
+                "content" : { "Fn::Join" : [ "", [
+                  "#!/bin/bash\n",
+                  "#\n",
+                  "# supervisord- this script starts and stops the supervisord daemon\n",
+                  "#\n",
+                  "# chkconfig:   - 85 15\n",
+                  "# description:  supervisord \n",
+                  "# processname: supervisord\n",
+                  "# config:      /etc/supervisord.conf\n",
+                  "# pidfile:     /var/run/supervisord.pid\n",
+                  "#\n",
+                  ". /etc/rc.d/init.d/functions\n",
+                  "# Source system settings\n",
+                  "if [ -f /etc/sysconfig/supervisord ]; then\n",
+                  "    . /etc/sysconfig/supervisord\n",
+                  "fi\n",
+                  "# Path to the supervisorctl script, server binary,\n",
+                  "# and short-form for messages.\n",
+                  "supervisorctl=/usr/local/bin/supervisorctl\n",
+                  "supervisord=${SUPERVISORD-/usr/local/bin/supervisord}\n",
+                  "prog=supervisord\n",
+                  "pidfile=${PIDFILE-/var/run/supervisord.pid}\n",
+                  "lockfile=${LOCKFILE-/var/lock/subsys/supervisord}\n",
+                  "STOP_TIMEOUT=${STOP_TIMEOUT-60}\n",
+                  "OPTIONS=\"${OPTIONS--c /etc/supervisord.conf}\"\n",
+                  "RETVAL=0\n",
+                  "\n",
+                  "start() {\n",
+                  "    echo -n $\"Starting $prog: \"\n",
+                  "    daemon --pidfile=${pidfile} $supervisord $OPTIONS\n",
+                  "    RETVAL=$?\n",
+                  "    echo\n",
+                  "    if [ $RETVAL -eq 0 ]; then\n",
+                  "        touch ${lockfile}\n",
+                  "        $supervisorctl $OPTIONS status\n",
+                  "    fi\n",
+                  "    return $RETVAL\n",
+                  "}\n",
+                  "\n",
+                  "stop() {\n",
+                  "    echo -n $\"Stopping $prog: \"\n",
+                  "    killproc -p ${pidfile} -d ${STOP_TIMEOUT} $supervisord\n",
+                  "    RETVAL=$?\n",
+                  "    echo\n",
+                  "    [ $RETVAL -eq 0 ] && rm -rf ${lockfile} ${pidfile}\n",
+                  "}\n",
+                  "\n",
+                  "reload() {\n",
+                  "    echo -n $\"Reloading $prog: \"\n",
+                  "    LSB=1 killproc -p $pidfile $supervisord -HUP\n",
+                  "    RETVAL=$?\n",
+                  "    echo\n",
+                  "    if [ $RETVAL -eq 7 ]; then\n",
+                  "        failure $\"$prog reload\"\n",
+                  "    else\n",
+                  "        $supervisorctl $OPTIONS status\n",
+                  "    fi\n",
+                  "}\n",
+                  "\n",
+                  "restart() {\n",
+                  "    stop\n",
+                  "    start\n",
+                  "}\n",
+                  "\n",
+                  "case \"$1\" in\n",
+                  "    start)\n",
+                  "        start\n",
+                  "        ;;\n",
+                  "    stop)\n",
+                  "        stop\n",
+                  "        ;;\n",
+                  "    status)\n",
+                  "        status -p ${pidfile} $supervisord\n",
+                  "        RETVAL=$?\n",
+                  "        [ $RETVAL -eq 0 ] && $supervisorctl $OPTIONS status\n",
+                  "        ;;\n",
+                  "    restart)\n",
+                  "        restart\n",
+                  "        ;;\n",
+                  "    condrestart|try-restart)\n",
+                  "        if status -p ${pidfile} $supervisord >&/dev/null; then\n",
+                  "          stop\n",
+                  "          start\n",
+                  "        fi\n",
+                  "        ;;\n",
+                  "    force-reload|reload)\n",
+                  "        reload\n",
+                  "        ;;\n",
+                  "    *)\n",
+                  "        echo $\"Usage: $prog {start|stop|restart|condrestart|try-restart|force-reload|reload}\"\n",
+                  "        RETVAL=2\n",
+                  "esac\n",
+                  "\n",
+                  "exit $RETVAL\n"
+                  ]]},
+                  "mode" : "000500",
+                  "owner" : "root",
+                  "group" : "root"
+              },
+              "/etc/supervisord.conf" : {
+                "content" : { "Fn::Join" : [ "", [
+                  "[supervisord]\n",
+                  "logfile=/var/log/supervisord.log ; (main log file;default $CWD/supervisord.log)\n",
+                  "logfile_maxbytes=50MB        ; (max main logfile bytes b4 rotation;default 50MB)\n",
+                  "logfile_backups=10           ; (num of main logfile rotation backups;default 10)\n",
+                  "loglevel=info                ; (log level;default info; others: debug,warn,trace)\n",
+                  "pidfile=/var/run/supervisord.pid ; (supervisord pidfile;default supervisord.pid)\n",
+                  "nodaemon=false               ; (start in foreground if true;default false)\n",
+                  "minfds=1024                  ; (min. avail startup file descriptors;default 1024)\n",
+                  "minprocs=200                 ; (min. avail process descriptors;default 200)\n",
+                  "\n",
+                  "[rpcinterface:supervisor]\n",
+                  "supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface\n",
+                  "\n",
+                  "[unix_http_server]\n",
+                  "file=/run/supervisor.sock\n",
+                  "\n",
+                  "[supervisorctl]\n",
+                  "serverurl=unix:///run/supervisor.sock ; use a unix:// URL  for a unix socket\n",
+                  "\n",
+                  "[include]\n",
+                  "files = supervisor.d/*.conf\n"
+                ]]},
+                "mode" : "000500",
+                "owner" : "root",
+                "group" : "root"
+              },
+              "/var/sinatra/unicorn.conf" : {
+                "content" : { "Fn::Join" : [ "", [
+                  "worker_processes 2\n",
+                  "working_directory \"",{ "Ref" : "WebAppDeployFolder" },"\"\n",
+                  "listen '",{ "Ref" : "WebAppDeployFolder" },"/tmp/unicorn.sock', :backlog => 512\n",
+                  "timeout 120\n",
+                  "pid \"",{ "Ref" : "WebAppDeployFolder" },"/tmp/unicorn.pid\"\n",
+                  "stderr_path \"",{ "Ref" : "WebAppDeployFolder" },"/tmp/unicorn.stderr.log\"\n",
+                  "stdout_path \"",{ "Ref" : "WebAppDeployFolder" },"/tmp/unicorn.stdout.log\"\n",
+                  "preload_app true\n",
+                  "if GC.respond_to?(:copy_on_write_friendly=)\n",
+                  "  GC.copy_on_write_friendly = true\n",
+                  "end\n",
+                  "\n",
+                  "before_fork do |server, worker|\n",
+                  "  old_pid = \"#{server.config[:pid]}.oldbin\"\n",
+                  "  if File.exists?(old_pid) && server.pid != old_pid\n",
+                  "    begin\n",
+                  "      Process.kill(\"QUIT\", File.read(old_pid).to_i)\n",
+                  "    rescue Errno::ENOENT, Errno::ESRCH\n",
+                  "    end\n",
+                  "  end\n",
+                  "end\n"
+                ]]},
+                "mode" : "000500",
+                "owner" : "root",
+                "group" : "root"
+              },
+              "/etc/supervisor.d/unicorn.conf" : {
+                "content" : { "Fn::Join" : [ "", [
+                  "[program:unicorn]\n",
+                  "command=/usr/local/bin/unicorn -c ",{ "Ref" : "WebAppDeployFolder" },"/unicorn.conf\n",
+                  "directory=",{ "Ref" : "WebAppDeployFolder" },"\n",
+                  "process_name=%(program_name)s\n",
+                  "autostart=true\n",
+                  "autorestart=true\n",
+                  "stopsignal=QUIT\n",
+                  "user=unicorn\n"
+                ]]},
+                "mode" : "000500",
+                "owner" : "root",
+                "group" : "root"
+              },
+              "/etc/nginx/nginx.conf" : {
+                "content" : { "Fn::Join" : [ "", [
+                  "# this sets the user nginx will run as,\n",
+                  "#and the number of worker processes\n",
+                  "user nginx nginx;\n",
+                  "worker_processes  2;\n",
+                  "\n",
+                  "# setup where nginx will log errors to\n",
+                  "# and where the nginx process id resides\n",
+                  "error_log  /var/log/nginx/error.log;\n",
+                  "pid        /var/run/nginx.pid;\n",
+                  "\n",
+                  "events {\n",
+                  "  worker_connections  1024;\n",
+                  "  # set to on if you have more than 1 worker_processes\n",
+                  "  accept_mutex off;\n",
+                  "}\n",
+                  "\n",
+                  "http {\n",
+                  "  include       /etc/nginx/mime.types;\n",
+                  "\n",
+                  "  default_type application/octet-stream;\n",
+                  "  access_log /tmp/nginx.access.log combined;\n",
+                  "\n",
+                  "  # use the kernel sendfile\n",
+                  "  sendfile        on;\n",
+                  "  # prepend http headers before sendfile()\n",
+                  "  tcp_nopush     on;\n",
+                  "\n",
+                  "  keepalive_timeout  5;\n",
+                  "  tcp_nodelay        on;\n",
+                  "\n",
+                  "  gzip  on;\n",
+                  "  gzip_vary on;\n",
+                  "  gzip_min_length 500;\n",
+                  "\n",
+                  "  gzip_disable \"MSIE [1-6]\\.(?!.*SV1)\";\n",
+                  "  gzip_types text/plain text/xml text/css\n",
+                  "     text/comma-separated-values\n",
+                  "     text/javascript application/x-javascript\n",
+                  "     application/atom+xml image/x-icon;\n",
+                  "\n",
+                  "  # use the socket we configured in our unicorn.rb\n",
+                  "  upstream unicorn_server {\n",
+                  "  server unix:",{ "Ref" : "WebAppDeployFolder" },"/tmp/unicorn.sock\n",
+                  "        fail_timeout=0;\n",
+                  "  }\n",
+                  "\n",
+                  "  # configure the virtual host\n",
+                  "  server {\n",
+                  "    # replace with your domain name\n",
+                  "    server_name www.test.com default_server;\n",
+                  "    server_tokens off;\n",
+                  "    # replace this with your static Sinatra app files, root + public\n",
+                  "    root ",{ "Ref" : "WebAppDeployFolder" },"/public;\n",
+                  "    # port to listen for requests on\n",
+                  "    listen 80;\n",
+                  "    # maximum accepted body size of client request\n",
+                  "    client_max_body_size 4G;\n",
+                  "    # the server will close connections after this time\n",
+                  "    keepalive_timeout 5;\n",
+                  "\n",
+                  "    location / {\n",
+                  "      try_files $uri @app;\n",
+                  "    }\n",
+                  "\n",
+                  "    location @app {\n",
+                  "      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n",
+                  "      proxy_set_header Host $http_host;\n",
+                  "      proxy_redirect off;\n",
+                  "      # pass to the upstream unicorn server mentioned above\n",
+                  "      proxy_pass http://unicorn_server;\n",
+                  "    }\n",
+                  "  }\n",
+                  "}\n"
+                ]]},
+                "mode" : "000500",
+                "owner" : "root",
+                "group" : "root"
+              }
+            },
+            "commands" : {
+              "01_adduser" : {
+                "command" : "useradd -m -d /var/sinatra/ unicorn",
+                "cwd" : "/var/sinatra"
+              },
+              "02_mkdir" : {
+                "command" : "mkdir /var/sinatra/tmp/",
+                "cwd" : "/var/sinatra"
+              },
+              "03_chmod" : {
+                "command" : "chown -R unicorn:unicorn /var/sinatra/",
+                "cwd" : "/var/sinatra"
+              }
+            },
+            "services" : {
+              "sysvinit" : {
+                "nginx" : { "enabled" : "true", "ensureRunning" : "true" },
+                "supervisord" : { "enabled" : "true", "ensureRunning" : "true" }
+              }
+            }
+          }
+        }
+      },
+      "Properties": {
+        "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
+                          { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
+        "InstanceType"   : { "Ref" : "InstanceType" },
+        "SecurityGroups" : [ {"Ref" : "WebServerSecurityGroup"} ],
+        "KeyName"        : { "Ref" : "KeyName" },
+        "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
+                       "#!/bin/bash -xe\n",
+                       "yum update -y aws-cfn-bootstrap\n",
+
+                       "/opt/aws/bin/cfn-init -v ",
+                       "         --stack ", { "Ref" : "AWS::StackName" },
+                       "         --resource LaunchConfig ",
+                       "         --configsets app_install ",
+                       "         --region ", { "Ref" : "AWS::Region" }, "\n",
+
+                       "/opt/aws/bin/cfn-signal -e $? ",
+                       "         --stack ", { "Ref" : "AWS::StackName" },
+                       "         --resource WebServerGroup ",
+                       "         --region ", { "Ref" : "AWS::Region" }, "\n"
+        ]]}}
+      }
+    }
+  },
+
+  "Outputs" : {
+    "WebsiteURL" : {
+      "Value" : { "Fn::Join" : ["", ["http://", { "Fn::GetAtt" : [ "ElasticLoadBalancer", "DNSName" ]}, "/" ]]},
+      "Description" : "Sinatra Website"
+    }
+  }
+}
