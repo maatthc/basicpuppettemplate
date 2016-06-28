@@ -69,26 +69,6 @@ Vagrant.configure(2) do |config|
   #   sudo apt-get install -y apache2
   # SHELL
   #
-    config.vm.define 'master_ubuntu' do |master_ubuntu|
-        master_ubuntu.vm.network "private_network", ip: "10.0.1.50"
-        master_ubuntu.vm.hostname = 'master-ubuntu'
-        master_ubuntu.vm.box = "ubuntu/xenial64"
-        master_ubuntu.ssh.username = "ubuntu" 
-        master_ubuntu.vm.provision "shell", path: 'provision.sh', args: ['ubuntu','master']
-        config.vm.provider "virtualbox" do |vb|
-          vb.name = "master_ubuntu"
-        end
-    end
-    config.vm.define 'webserver_ubuntu' do |webserver_ubuntu|
-        webserver_ubuntu.vm.network "private_network", ip: "10.0.1.52"
-        webserver_ubuntu.vm.hostname = 'webserver-ubuntu'
-        webserver_ubuntu.vm.box = "ubuntu/xenial64"
-        webserver_ubuntu.ssh.username = "ubuntu"
-        webserver_ubuntu.vm.provision "shell", path: 'provision.sh', args: ['ubuntu','agent'] 
-        config.vm.provider "virtualbox" do |vb|
-          vb.name = "webserver-ubuntu"
-        end
-    end
     config.vm.define 'master_centos' do |master_centos|
         master_centos.vm.network "private_network", ip: "10.0.1.50"
         master_centos.vm.hostname = 'master-centos'
@@ -100,5 +80,15 @@ Vagrant.configure(2) do |config|
         webserver_centos.vm.hostname = 'webserver-centos'
         webserver_centos.vm.box = "centos/7"
         webserver_centos.vm.provision "shell", path: 'provision.sh', args: ['centos','agent']
+    end
+    config.vm.define 'webserver_ubuntu' do |webserver_ubuntu|
+        webserver_ubuntu.vm.network "private_network", ip: "10.0.1.52"
+        webserver_ubuntu.vm.hostname = 'webserver-ubuntu'
+        webserver_ubuntu.vm.box = "ubuntu/xenial64"
+        webserver_ubuntu.ssh.username = "ubuntu"
+        webserver_ubuntu.vm.provision "shell", path: 'provision.sh', args: ['ubuntu','agent'] 
+        config.vm.provider "virtualbox" do |vb|
+          vb.name = "webserver-ubuntu"
+        end
     end
 end

@@ -35,17 +35,17 @@ function install_packages {
            case $2 in
                 agent)
                     # Install Agent
-                    http_proxy=$http_proxy  sudo yum -y install puppet-agent
+                    sudo http_proxy=$http_proxy yum -y install puppet-agent
                     ;;
                 master)
                    # Install Master
-                   http_proxy=$http_proxy sudo yum -y install puppetserver git vim
+                   sudo http_proxy=$http_proxy yum -y install puppetserver git vim
                    ;;
            esac
            ;;
        ubuntu)
            # Install Repo
-           http_proxy=$http_proxy wget -q https://apt.puppetlabs.com/puppetlabs-release-pc1-xenial.deb -O puppetlabs-release-xenial.deb&& \
+           sudo http_proxy=$http_proxy wget -q https://apt.puppetlabs.com/puppetlabs-release-pc1-xenial.deb -O puppetlabs-release-xenial.deb&& \
            sudo http_proxy=$http_proxy dpkg -i puppetlabs-release-xenial.deb && \
            sudo http_proxy=$http_proxy apt-get update
            case $2 in
@@ -74,8 +74,8 @@ function setup_puppet {
         echo "" | sudo tee --append /etc/hosts 2> /dev/null && \
         echo "# Host config for Puppet Master and Agent Nodes" | sudo tee --append /etc/hosts 2> /dev/null && \
         echo "10.0.1.50    puppet.example.com  puppet" | sudo tee --append /etc/hosts 2> /dev/null && \
-        echo "10.0.1.50    master.example.com  master" | sudo tee --append /etc/hosts 2> /dev/null && \
-        echo "10.0.1.51    agent.example.com  agent" | sudo tee --append /etc/hosts 2> /dev/null
+        echo "10.0.1.51    webserver-centos.example.com  webserver-centos" | sudo tee --append /etc/hosts 2> /dev/null && \
+        echo "10.0.1.52    webserver-ubuntu.example.com  ubuntu-centos" | sudo tee --append /etc/hosts 2> /dev/null
     fi
     case $1 in
         centos)
