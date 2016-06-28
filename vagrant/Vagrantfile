@@ -85,7 +85,7 @@ Vagrant.configure(2) do |config|
         webserver_ubuntu.vm.network "private_network", ip: "10.0.1.52"
         webserver_ubuntu.vm.hostname = 'webserver-ubuntu'
         webserver_ubuntu.vm.box = "ubuntu/xenial64"
-        webserver_ubuntu.ssh.username = "ubuntu"
+        #webserver_ubuntu.ssh.username = "ubuntu"
         webserver_ubuntu.vm.provision "shell", path: 'provision.sh', args: ['ubuntu','agent'] 
         config.vm.provider "virtualbox" do |vb|
           vb.name = "webserver-ubuntu"
