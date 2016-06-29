@@ -105,7 +105,7 @@ This implemention utilizes the Google implementation of Kubernetes, Docker and m
 ## Objective
 This approach abstract the infrastructure completely, focousing only on encapsuling the application code in a microcontainer and deploying it on top of Container Cluster Provider.
 ## Target OS
-- [Alpine Linux](http://www.alpinelinux.org/)
+- [Alpine Linux](http://www.alpinelinux.org/) - Container images ~ 37 MB
 
 ## Pre-requisites
  - [Google Cloud Platform account](http://console.cloud.google.com/)
