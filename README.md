@@ -1,23 +1,26 @@
 **Table of Contents**  
 
 - [Before you start](#before-you-start)
-- [Vagrant](#Vagrant)
-        - [Description](#)
-        - [Objective](#)
-        - [Target OS](#)
-        - [How to start](#)
-        - [Outcome](#)
+- [Vagrant](#vagrant)
+        - [Description](#description)
+        - [Objective](#objective)
+        - [Target OS](#target-os)
+        - [How to start](#how-to-start)
+        - [Outcome](#outcome)
 - [Amazon CloudFormation](#amazon-cloudformation)
-        - [Description](#)
-        - [Objective](#)
-        - [Target OS](#)
-        - [Pre-requisites](#)
-        - [Outcome](#)
+        - [Description](#description-1)
+        - [Objective](#objective-1)
+        - [Target OS](#target-os-1)
+        - [Pre-requisites](#pre-requisites)
+        - [How to start](#how-to-start-1)
+        - [Outcome](#outcome-1)
 - [Google Cloud Container Engine](#google-cloud-container-engine)
-        - [Description](#)
-        - [Objective](#)
-        - [Target OS](#)
-        - [Outcome](#)
+        - [Description](#description-2)
+        - [Objective](#objective-2)
+        - [Target OS](#target-os-2)
+        - [Pre-requisites](#pre-requisites-1)
+        - [How to start](#how-to-start-2)
+        - [Outcome](#outcome-2)
 
 The objective of this exercise is to implement the requirement of [REA Simple Sinatra App](https://github.com/rea-cruitment/simple-sinatra-app).
 Three different strategies were used to deliver the solution:
@@ -82,7 +85,8 @@ Present a alternative Infrastructure as Code (IaC) approach, using entirely the 
 ## Pre-requisites
 - Valid AWS credentials Access Key ID/Secret Access Key - Please create one isolated from your production credentials.
 - Python version 2.7 or superior installed on your workstation.
-- Python module boto3 installed: pip install boto3 . 
+- Python module boto3 installed: pip install boto3 .
+
 ## How to start
 From you cloned repository folder, go to the "aws" folder:
 ```
@@ -102,11 +106,13 @@ This implemention utilizes the Google implementation of Kubernetes, Docker and m
 This approach abstract the infrastructure completely, focousing only on encapsuling the application code in a microcontainer and deploying it on top of Container Cluster Provider.
 ## Target OS
 - [Alpine Linux](http://www.alpinelinux.org/)
+
 ## Pre-requisites
  - [Google Cloud Platform account](http://console.cloud.google.com/)
  - A test Google Cloud Platform Project with any name
  - [Docker](https://docs.docker.com/engine/installation/), [Google Cloud SDK](https://cloud.google.com/sdk/) and [kubectl](http://kubernetes.io/docs/user-guide/kubectl-overview/) installed.
  - [Google Cloud SDK](https://cloud.google.com/sdk/) initialized and configured to use your Test Project: gcloud init
+
 ## How to start
 From you cloned repository folder, go to the "googlecloud" folder:
 ```
