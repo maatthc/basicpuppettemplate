@@ -1,111 +1,103 @@
-# rea
+[TOC]
 
-#### Table of Contents
+The objective of this exercise is to implement the requirement of [REA Simple Sinatra App](https://github.com/rea-cruitment/simple-sinatra-app).
+Three different strategies were used to deliver the solution:
+- Vagrant + Puppet : To be used locally with VMs (or also baremetal servers)
+- Amazon CloudFormation : To demostrate how to setup the environment using AWS
+- Google Cloud Container Engine : To demostrate how to use Docker and Kuberntes
 
-1. [Overview](#overview)
-2. [Module Description](#module-description)
-3. [Setup - The basics of getting started with rea](#setup)
-    * [What rea affects](#what-rea-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with rea](#beginning-with-rea)
-4. [Usage - Configuration options and additional functionality](#usage)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
-7. [To do](#todo)
-## Overview
+# Before you start
+First of all you need a Git client installed and properly configured. 
+You also need to clone this repository to your workstation, for example to the folder "/tmp/rea":
 
-This is a simple Puppet Template for setting up a Linux (CentOS 5.9) with Nginx, Unicorn and a 'Hello World' Sinatra App. 
+```
+git clone https://github.com/maatthc/rea.git /tmp/rea
+```
 
-## Module Description
+Althought all development was done using a MacBookPro workstation, the code here presented might be also compatible with a Linux workstation with some ajustments. 
 
-This module will provide a Web site running on the Agent server at port 80 and deliver the Ruby App available at git://github.com/tnh/simple-sinatra-app.git .
+# Vagrant
+## Description
+This implemention makes use of Vagrant and VirtualBox to setup a complete Puppet deployment, with a Master and two agents, each one with a different Linux distro. 
+The Master will be setup and a specific Puppet module will be deployed (rea) - This module defines the manifest/hiera data what will be used to setup the Agents.
+The Agents then will be created, connect do the Master and apply the manifests required to deploys the Sinatra App - each one uses different techniques to support the Application, according with its Linux distro (CentOS and Ubuntu). 
+The VMs will be bootstrapped using one unique provisioning script (provision.sh), that will install the basic packages and setup things like name resolution.
+## Objective
+The objective is to demostrate the traditional Infrastructure as Code (IaC) approach using  Automation Tools as Puppet.
+## Target OS
+ - CentOS 7
+ - Ubuntu 16.04
+## Pre-requisites
+You will need [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/) installed and properly configured. 
 
-This module has been validated using "puppet-lint" but the "line has more than 80 characters" item has ignored.
+## How to start
+From you cloned repository folder, go to the "vagrant" folder:
+```
+cd /tmp/rea/vagrant
+```
 
-Both Nginx and Unicorn workers were set to a minimum to save resources. Please increase those number in production.
+Start the Master instance:
+```
+vagrant up master_centos   
+```
 
-The dependencies of the module are :
-* puppetlabs-firewall
-* puppetlabs-ntp
-* saz-ssh
-* huit-splunk
-* puppetlabs-ruby
+Wait until the end of the previous command and then spin up the two Agents:
+```
+vagrant up webserver_centos 
+vagrant up webserver_ubuntu
+```
+## Outcome
+The process of spinning up the Agents and applying all the states might take around 10 minutes. After that you will able the acess the Sinatra App running on each VM using the links bellow:
+- CentOS: [http://10.0.1.51/](http://10.0.1.51/)
+- Ubuntu: [http://10.0.1.52/](http://10.0.1.52/)
 
-## Setup
-Please follow this steps as "root" :
+# Amazon CloudFormation
+## Description
+This implemention makes use of a single CloudFormation template to define some EC2 instances and the ElasticLoadBalancer, SecurityGroups and AutoScaling polices that defines the Infrastructre. 
+The same Template also defines the Nginx, Supervisord and Unicorn services that will used to support the Application.
+## Objective
+Present a alternative Infrastructure as Code (IaC) approach, using entirely the Amazon AWS Stack. 
+## Target OS
+ - Amazon Linux AMI
 
-*    cd /etc/puppet/modules
-*    curl -L https://github.com/maatthc/rea/tarball/master -o maat-rea.tgz
-*    puppet module install maat-rea.tgz
-*    rm /etc/puppet/manifests/site.pp
-*    ln -s /etc/puppet/modules/rea/ext/site.pp /etc/puppet/manifests/site.pp
-*    rm /etc/puppet/hiera.yaml
-*    ln -s /etc/puppet/modules/rea/ext/hiera.yaml /etc/puppet/hiera.yaml
-*    Add to the main session of /etc/puppet/puppet.conf:
+## Pre-requisites
+- Valid AWS credentials Access Key ID/Secret Access Key - Please create one isolated from your production credentials.
+- Python version 2.7 or superior installed on your workstation.
+- Python module boto3 installed: pip install boto3 . 
+## How to start
+From you cloned repository folder, go to the "aws" folder:
+```
+cd /tmp/rea/aws
+```
+Run the Boto Python Script - It will create its own EC2 Key Pair for the Sydney Region, load the Json Template, trigger the Stack creating and wait it to be deployed.
+```
+python init.py
+```
+## Outcome
+After around 5 minutes the script will print the URL for the Sinatra WebApp, what will be running in two EC2 instances with Auto Scaling and load balance.
 
-        # To user the "each" function for Array from Hiera
+# Google Cloud Container Engine
+## Description
+This implemention utilizes the Google implementation of Kubernetes, Docker and microcontainers.
+## Objective
+This approach abstract the infrastructure completely, focousing only on encapsuling the application code in a microcontainer and deploying it on top of Container Cluster Provider.
+## Target OS
+- [Alpine Linux](http://www.alpinelinux.org/)
+## Pre-requisites
+ - [Google Cloud Platform account](http://console.cloud.google.com/)
+ - A test Google Cloud Platform Project with any name
+ - [Docker](https://docs.docker.com/engine/installation/), [Google Cloud SDK](https://cloud.google.com/sdk/) and [kubectl](http://kubernetes.io/docs/user-guide/kubectl-overview/) installed.
+ - [Google Cloud SDK](https://cloud.google.com/sdk/) initialized and configured to use your Test Project: gcloud init
+## How to start
+From you cloned repository folder, go to the "googlecloud" folder:
+```
+cd /tmp/rea/googlecloud
+```
+Execute the init script - It will build the Docker image, pull it the Google Cloud Container Registry, create the cluster/pods and expose it publicly to the Internet. 
+```
+sh init.sh
+```
+## Outcome
+The last step will inform you the Public IP that can be used to access your application on the cluster - Use the field 'EXTERNAL-IP' as :
 
-        parser = future
-
-*    /etc/init.d/puppetmaster restart
-
-### What rea affects
-
-Please keep in mind that this module should overwrite:
-* /etc/puppet/manifests/site.pp
-* /etc/puppet/hiera.yaml
-
-Please use a vanila installation of Puppet. 
-
-### Setup Requirements 
-
-* Puppet-2.7.0 or later
-* Facter 1.7.0 or later
-* Ruby-1.9.3
-
-## Usage
-This is the module structure:
-
-* changeModuloname.sh
-
-        Use this script to create new vanila template for other initial Puppet Projects
-* ext
-        
-        The default site.pp and hiera.yaml are here
-* hieradata
-
-        The Hiera database files reside here
-* manifests
-
-        Classes/Roles/Profiles are here 
-* metadata.json
-
-        Module definition and dependencies
-* README.md
-
-        This file
-* templates
-
-        Module template used for many classes
-
-The other files are not being used and were created automatically for the Puppet Module generator.
-
-## Reference
-
-This module uses modules available at Forge (https://forge.puppetlabs.com/) as much as possible to avoid rewriting the wheel. Some modules available there were ignored for not having enough support, quality or being to complex for this test.
-
-## Limitations
-
-This module has been tested only using CentOs 5.9. Although there is a draft support for Debian or Ubuntu using Hiera files.
-
-## Development
-
-Please fell free to submit any suggestions using the GitHub "Pull Request". 
-
-##TODO
-
-* Fix ip6tables Firewall error with iptables < v1.3
-* Automate the installation script
-* Add Passanger support for the Puppet Master node
-* Develop a smarter Nginx+Unicorn Module 
-
+_http://EXTERNAL-IP/_
