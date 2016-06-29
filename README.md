@@ -1,4 +1,23 @@
-[TOC]
+**Table of Contents**  
+
+- [Before you start](#)
+- [Vagrant](#)
+        - [Description](#)
+        - [Objective](#)
+        - [Target OS](#)
+        - [How to start](#)
+        - [Outcome](#)
+- [Amazon CloudFormation](#)
+        - [Description](#)
+        - [Objective](#)
+        - [Target OS](#)
+        - [Pre-requisites](#)
+        - [Outcome](#)
+- [Google Cloud Container Engine](#)
+        - [Description](#)
+        - [Objective](#)
+        - [Target OS](#)
+        - [Outcome](#)
 
 The objective of this exercise is to implement the requirement of [REA Simple Sinatra App](https://github.com/rea-cruitment/simple-sinatra-app).
 Three different strategies were used to deliver the solution:
