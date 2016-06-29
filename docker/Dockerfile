@@ -12,10 +12,10 @@ RUN apk add --no-cache ruby-irb
 RUN gem install sinatra
 RUN gem install rakeup
 
-COPY simple-sinatra-app/ $MyDir
+COPY sinatra $MyDir
 
 WORKDIR $MyDir
 
-EXPOSE 80
+EXPOSE 80 80
 
-CMD rackup --port 80
+CMD rackup --host 0.0.0.0 -p 80
